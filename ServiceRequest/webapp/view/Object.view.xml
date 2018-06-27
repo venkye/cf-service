@@ -1,0 +1,75 @@
+<mvc:View controllerName="zz.ServiceRequest.controller.Object" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.f.semantic"
+	xmlns:l="sap.ui.layout">
+	<semantic:SemanticPage id="page" headerPinnable="false" toggleHeaderOnTitleClick="false" busy="{objectView>/busy}"
+		busyIndicatorDelay="{objectView>/delay}">
+		<semantic:titleHeading>
+			<Title text="{Subject}"/>
+		</semantic:titleHeading>
+		<semantic:content>
+			<IconTabBar id="iconTabBar" class="sapUiResponsiveContentPadding">
+				<items>
+					<IconTabFilter icon="sap-icon://product" tooltip="{i18n>detailIconTabBarInfo}" text="Products">
+						<content>
+							<Table id="productList" mode="SingleSelectLeft" width="auto" growing="true" growingThreshold="4" items="{ServiceRefObjects}"
+								updateFinished="onListUpdateFinished" noDataText="{i18n>detailLineItemTableNoDataText}"
+								busyIndicatorDelay="{detailView>/lineItemTableDelay}" class="sapUiResponsiveMargin">
+								<columns>
+									<Column>
+										<Text text="Product ID"/>
+									</Column>
+									<Column>
+										<Text text="Product Type"/>
+									</Column>
+									<Column>
+										<Text text="Main Indicator"/>
+									</Column>
+								</columns>
+								<items>
+									<ColumnListItem >
+										<cells>
+											<ObjectIdentifier title="{ProductID}" text="Desc : {ProductDesc}"/>
+										</cells>
+										<cells>
+											<Text text="{ProductType}"/>
+										</cells>
+										<cells>
+											<CheckBox selected="{MainIndicator}" enabled="false"/>
+										</cells>
+									</ColumnListItem>
+								</items>
+							</Table>
+							<l:HorizontalLayout class="sapUiContentPadding">
+								<Panel width="200px" class="sapUiResponsiveMargin" accessibleRole="Region">
+									<headerToolbar>
+										<Toolbar height="3rem">
+											<Title text="API Operations"/>
+										</Toolbar>
+									</headerToolbar>
+									<content>
+										<l:VerticalLayout>
+											<Button type="Emphasized" text="Create" press="openProductCreate"/>
+											<Button type="Emphasized" text="Delete" press="deleteProduct"/>
+										</l:VerticalLayout>
+									</content>
+								</Panel>
+								<Panel width="200px" class="sapUiResponsiveMargin" accessibleRole="Region">
+									<headerToolbar>
+										<Toolbar height="3rem">
+											<Title text="API Functions"/>
+										</Toolbar>
+									</headerToolbar>
+									<content>
+										<l:VerticalLayout>
+											<Button type="Emphasized" text="GetProductInfo" press="getProductInfo"/>
+										</l:VerticalLayout>
+									</content>
+								</Panel>
+							</l:HorizontalLayout>
+						</content>
+					</IconTabFilter>
+					<IconTabFilter id="iconTabBarFilter2" icon="sap-icon://notes" text="Items"></IconTabFilter>
+				</items>
+			</IconTabBar>
+		</semantic:content>
+	</semantic:SemanticPage>
+</mvc:View>

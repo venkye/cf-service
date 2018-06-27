@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+  <edmx:DataServices m:DataServiceVersion="2.0">
+    <Schema Namespace="TicketService" Alias="TicketService" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+      <EntityContainer Name="EntityContainer" m:IsDefaultEntityContainer="true">
+        <EntitySet Name="Ticket" EntityType="TicketService.Ticket"/>
+        <EntitySet Name="Party" EntityType="TicketService.Party"/>
+        <EntitySet Name="Item" EntityType="TicketService.Item"/>
+        <EntitySet Name="ItemScheduleLine" EntityType="TicketService.ItemScheduleLine"/>
+        <EntitySet Name="ServiceRefObject" EntityType="TicketService.ServiceRefObject"/>
+        <FunctionImport Name="getProductInfo" ReturnType="TicketService.productRet" m:HttpMethod="GET">
+          <Parameter Name="ProductID" Type="Edm.String" Mode="In"/>
+        </FunctionImport>
+        <AssociationSet Name="Ticket_Items" Association="TicketService.Ticket_Items">
+          <End Role="Ticket" EntitySet="Ticket"/>
+          <End Role="Item" EntitySet="Item"/>
+        </AssociationSet>
+        <AssociationSet Name="Ticket_Parties" Association="TicketService.Ticket_Parties">
+          <End Role="Ticket" EntitySet="Ticket"/>
+          <End Role="Party" EntitySet="Party"/>
+        </AssociationSet>
+        <AssociationSet Name="Ticket_ServiceRefObjects" Association="TicketService.Ticket_ServiceRefObjects">
+          <End Role="Ticket" EntitySet="Ticket"/>
+          <End Role="ServiceRefObject" EntitySet="ServiceRefObject"/>
+        </AssociationSet>
+        <AssociationSet Name="Party_Ticket" Association="TicketService.Party_Ticket">
+          <End Role="Party" EntitySet="Party"/>
+          <End Role="Ticket" EntitySet="Ticket"/>
+        </AssociationSet>
+        <AssociationSet Name="Item_Ticket" Association="TicketService.Item_Ticket">
+          <End Role="Item" EntitySet="Item"/>
+          <End Role="Ticket" EntitySet="Ticket"/>
+        </AssociationSet>
+        <AssociationSet Name="Item_ItemScheduleLines" Association="TicketService.Item_ItemScheduleLines">
+          <End Role="Item" EntitySet="Item"/>
+          <End Role="ItemScheduleLine" EntitySet="ItemScheduleLine"/>
+        </AssociationSet>
+        <AssociationSet Name="ItemScheduleLine_Item" Association="TicketService.ItemScheduleLine_Item">
+          <End Role="ItemScheduleLine" EntitySet="ItemScheduleLine"/>
+          <End Role="Item" EntitySet="Item"/>
+        </AssociationSet>
+        <AssociationSet Name="ServiceRefObject_Ticket" Association="TicketService.ServiceRefObject_Ticket">
+          <End Role="ServiceRefObject" EntitySet="ServiceRefObject"/>
+          <End Role="Ticket" EntitySet="Ticket"/>
+        </AssociationSet>
+      </EntityContainer>
+      <EntityType Name="Ticket" Abstract="false" OpenType="false">
+        <Key>
+          <PropertyRef Name="UUID"/>
+        </Key>
+        <Property Name="UUID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="ID" Type="Edm.String" MaxLength="35"/>
+        <Property Name="PriorityCode" Type="Edm.String" MaxLength="1"/>
+        <Property Name="Subject" Type="Edm.String" MaxLength="255"/>
+        <Property Name="TypeCode" Type="Edm.String" MaxLength="4"/>
+        <Property Name="StatusCode" Type="Edm.String" MaxLength="2"/>
+        <NavigationProperty Name="Items" Relationship="TicketService.Ticket_Items" FromRole="Ticket" ToRole="Item"/>
+        <NavigationProperty Name="Parties" Relationship="TicketService.Ticket_Parties" FromRole="Ticket" ToRole="Party"/>
+        <NavigationProperty Name="ServiceRefObjects" Relationship="TicketService.Ticket_ServiceRefObjects" FromRole="Ticket" ToRole="ServiceRefObject"/>
+      </EntityType>
+      <EntityType Name="Party" Abstract="false" OpenType="false">
+        <Key>
+          <PropertyRef Name="UUID"/>
+        </Key>
+        <Property Name="UUID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="BupaID" Type="Edm.String" MaxLength="60"/>
+        <Property Name="BupaUUID" Type="Edm.Guid"/>
+        <Property Name="TypeCode" Type="Edm.String" MaxLength="15"/>
+        <Property Name="RoleCode" Type="Edm.String" MaxLength="10"/>
+        <Property Name="MainIndicator" Type="Edm.Boolean"/>
+        <NavigationProperty Name="Ticket" Relationship="TicketService.Party_Ticket" FromRole="Party" ToRole="Ticket"/>
+        <Property Name="Ticket_UUID" Type="Edm.Guid"/>
+      </EntityType>
+      <EntityType Name="Item" Abstract="false" OpenType="false">
+        <Key>
+          <PropertyRef Name="UUID"/>
+        </Key>
+        <Property Name="UUID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="ItemID" Type="Edm.String" MaxLength="10"/>
+        <Property Name="Description" Type="Edm.String" MaxLength="40"/>
+        <Property Name="DescriptionLanguageCode" Type="Edm.String" MaxLength="2"/>
+        <Property Name="UserServiceTransactionProcessingTypeCode" Type="Edm.String" MaxLength="4"/>
+        <Property Name="ServiceRequestExecutionLifeCycleStatusCode" Type="Edm.String" MaxLength="2"/>
+        <NavigationProperty Name="Ticket" Relationship="TicketService.Item_Ticket" FromRole="Item" ToRole="Ticket"/>
+        <NavigationProperty Name="ItemScheduleLines" Relationship="TicketService.Item_ItemScheduleLines" FromRole="Item" ToRole="ItemScheduleLine"/>
+        <Property Name="Ticket_UUID" Type="Edm.Guid"/>
+      </EntityType>
+      <EntityType Name="ItemScheduleLine" Abstract="false" OpenType="false">
+        <Key>
+          <PropertyRef Name="UUID"/>
+        </Key>
+        <Property Name="UUID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="TypeCode" Type="Edm.String" MaxLength="2"/>
+        <Property Name="StartDateTime" Type="Edm.DateTimeOffset"/>
+        <Property Name="EndDateTime" Type="Edm.DateTimeOffset"/>
+        <NavigationProperty Name="Item" Relationship="TicketService.ItemScheduleLine_Item" FromRole="ItemScheduleLine" ToRole="Item"/>
+        <Property Name="Quantity_value" Type="Edm.Int32"/>
+        <Property Name="Quantity_unit" Type="Edm.String"/>
+        <Property Name="Item_UUID" Type="Edm.Guid"/>
+      </EntityType>
+      <EntityType Name="ServiceRefObject" Abstract="false" OpenType="false">
+        <Key>
+          <PropertyRef Name="UUID"/>
+        </Key>
+        <Property Name="UUID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="ProductID" Type="Edm.String" MaxLength="40"/>
+        <Property Name="MainIndicator" Type="Edm.Boolean"/>
+        <NavigationProperty Name="Ticket" Relationship="TicketService.ServiceRefObject_Ticket" FromRole="ServiceRefObject" ToRole="Ticket"/>
+        <Property Name="Ticket_UUID" Type="Edm.Guid"/>
+      </EntityType>
+      <ComplexType Name="productRet" Abstract="false">
+        <Property Name="Product" Type="Edm.String"/>
+        <Property Name="ProductType" Type="Edm.String"/>
+      </ComplexType>
+      <Association Name="Ticket_Items">
+        <End Role="Ticket" Type="TicketService.Ticket" Multiplicity="*"/>
+        <End Role="Item" Type="TicketService.Item" Multiplicity="*"/>
+      </Association>
+      <Association Name="Ticket_Parties">
+        <End Role="Ticket" Type="TicketService.Ticket" Multiplicity="*"/>
+        <End Role="Party" Type="TicketService.Party" Multiplicity="*"/>
+      </Association>
+      <Association Name="Ticket_ServiceRefObjects">
+        <End Role="Ticket" Type="TicketService.Ticket" Multiplicity="*"/>
+        <End Role="ServiceRefObject" Type="TicketService.ServiceRefObject" Multiplicity="*"/>
+      </Association>
+      <Association Name="Party_Ticket">
+        <End Role="Party" Type="TicketService.Party" Multiplicity="*"/>
+        <End Role="Ticket" Type="TicketService.Ticket" Multiplicity="0..1"/>
+        <ReferentialConstraint>
+          <Principal Role="Ticket">
+            <PropertyRef Name="UUID"/>
+          </Principal>
+          <Dependent Role="Party">
+            <PropertyRef Name="Ticket_UUID"/>
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="Item_Ticket">
+        <End Role="Item" Type="TicketService.Item" Multiplicity="*"/>
+        <End Role="Ticket" Type="TicketService.Ticket" Multiplicity="0..1"/>
+        <ReferentialConstraint>
+          <Principal Role="Ticket">
+            <PropertyRef Name="UUID"/>
+          </Principal>
+          <Dependent Role="Item">
+            <PropertyRef Name="Ticket_UUID"/>
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="Item_ItemScheduleLines">
+        <End Role="Item" Type="TicketService.Item" Multiplicity="*"/>
+        <End Role="ItemScheduleLine" Type="TicketService.ItemScheduleLine" Multiplicity="*"/>
+      </Association>
+      <Association Name="ItemScheduleLine_Item">
+        <End Role="ItemScheduleLine" Type="TicketService.ItemScheduleLine" Multiplicity="*"/>
+        <End Role="Item" Type="TicketService.Item" Multiplicity="0..1"/>
+        <ReferentialConstraint>
+          <Principal Role="Item">
+            <PropertyRef Name="UUID"/>
+          </Principal>
+          <Dependent Role="ItemScheduleLine">
+            <PropertyRef Name="Item_UUID"/>
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+      <Association Name="ServiceRefObject_Ticket">
+        <End Role="ServiceRefObject" Type="TicketService.ServiceRefObject" Multiplicity="*"/>
+        <End Role="Ticket" Type="TicketService.Ticket" Multiplicity="0..1"/>
+        <ReferentialConstraint>
+          <Principal Role="Ticket">
+            <PropertyRef Name="UUID"/>
+          </Principal>
+          <Dependent Role="ServiceRefObject">
+            <PropertyRef Name="Ticket_UUID"/>
+          </Dependent>
+        </ReferentialConstraint>
+      </Association>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

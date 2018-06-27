@@ -1,0 +1,40 @@
+<mvc:View controllerName="zz.ServiceRequest.controller.Worklist" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:semantic="sap.f.semantic">
+	<semantic:SemanticPage id="page" headerPinnable="false" toggleHeaderOnTitleClick="false" showFooter="true">
+		<semantic:titleHeading>
+			<Title text="{i18n>worklistTitle}"/>
+		</semantic:titleHeading>
+		<semantic:content>
+			<Table id="table" width="auto" items="{ path: '/Ticket', sorter: { path: 'Subject', descending: false } }"
+				noDataText="{worklistView>/tableNoDataText}" busyIndicatorDelay="{worklistView>/tableBusyDelay}" growing="true" growingScrollToLoad="true"
+				updateFinished="onUpdateFinished">
+				<columns>
+					<Column>
+						<Text text="Ticket"/>
+					</Column>
+					<Column>
+						<Text text="ID"/>
+					</Column>
+					<Column>
+						<Text text="Status"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem type="Navigation" press="onPress">
+						<cells>
+							<ObjectIdentifier title="{Subject}" text="UUID : {UUID}"/>
+						</cells>
+						<cells>
+							<Text text="{ID}"/>
+						</cells>
+						<cells>
+							<ObjectNumber number="{StatusCode}"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</semantic:content>
+		<semantic:footerCustomActions>
+			<Button text="Create Ticket" icon="sap-icon://add" press="showPopOver"/>
+		</semantic:footerCustomActions>
+	</semantic:SemanticPage>
+</mvc:View>
