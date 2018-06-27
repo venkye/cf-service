@@ -1,0 +1,13 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:codeeditor="sap.ui.codeeditor" xmlns:l="sap.ui.layout">
+	<ResponsivePopover title="Payload" class="sapUiPopupWithPadding" placement="Top" contentWidth="700px">
+		<beginButton>
+			<Button text="Create" press="onCreate"/>
+		</beginButton>
+		<content>
+			<l:VerticalLayout width="100%" class="sapUiContentPadding">
+				<Text text="Path: {oPayloadModel>/path}"/>
+				<codeeditor:CodeEditor value="{oPayloadModel>/payload}" height="300px" type="json"/>
+			</l:VerticalLayout>
+		</content>
+	</ResponsivePopover>
+</core:FragmentDefinition>

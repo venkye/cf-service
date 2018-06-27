@@ -1,0 +1,58 @@
+ID: cfservice
+_schema-version: '2.1'
+version: 0.0.1
+
+modules:
+ - name: db
+   type: hdb
+   path: db
+   requires:
+    - name: hdi_db
+
+ - name: srv
+   type: java
+   path: srv
+   parameters:
+      memory: 1024M
+   provides:
+    - name: srv_api
+      properties:
+         url: ${default-url}
+   requires:
+    - name: hdi_db
+      properties:
+         JBP_CONFIG_RESOURCE_CONFIGURATION: '[tomcat/webapps/ROOT/META-INF/context.xml:
+            {"service_name_for_DefaultDB" : "~{hdi-container-name}"}]'
+         PRODUCT_ROUTE: 'https://sandbox.api.sap.com/s4hanacloud/sap/opu/odata/sap/API_PRODUCT_SRV'
+         API_KEY: '7SwbtMbooF1HtxwLWYLcF7TaIsWEBIfP'
+
+ - name: ServiceRequest
+   type: html5
+   path: ServiceRequest
+   parameters:
+      disk-quota: 256M
+      memory: 256M
+   build-parameters:
+      builder: grunt
+   requires:
+    - name: srv_api
+      group: destinations
+      properties:
+         forwardAuthToken: true
+         strictSSL: false
+         name: srv_api
+         url: ~{url}
+    - name: uaa_cfservice
+
+resources:
+ - name: hdi_db
+   properties:
+      hdi-container-name: ${service-name}
+   type: com.sap.xs.hdi-container
+
+ - name: uaa_cfservice
+   parameters:
+      path: ./xs-security.json
+      service-plan: application
+   type: com.sap.xs.uaa
+
